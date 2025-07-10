@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Welcome, Santo Family!</title>
+  <title>Welcome, D'Amico Family!</title>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
   <style>
     html, body {
@@ -126,6 +126,7 @@
       display: block;
       letter-spacing: 1px;
     }
+    /* Footer Buttons */
     .footer-buttons {
       background: #d3b36a;
       padding: 22px 0 14px 0;
@@ -135,6 +136,7 @@
       z-index: 3;
       border-top: 4px solid #b59c5a;
       min-height: 90px;
+      transition: opacity 0.4s, visibility 0.4s;
     }
     .footer-btn {
       display: flex;
@@ -153,6 +155,8 @@
       outline: none;
       border: none;
       cursor: pointer;
+      height: 70px;
+      justify-content: center;
     }
     .footer-btn:focus, .footer-btn:hover {
       background: #f6e4b5;
@@ -160,10 +164,66 @@
       transform: scale(1.05);
     }
     .footer-btn .icon {
-      font-size: 2em;
-      margin-bottom: 5px;
-      color: #22613a;
-      text-shadow: 0 2px 8px #b59c5a60;
+      display: none;
+    }
+    /* Submenu Styles */
+    .footer-buttons.submenu {
+      display: flex;
+      opacity: 1;
+      visibility: visible;
+      pointer-events: auto;
+    }
+    .footer-buttons.hide {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+    /* Video Modal */
+    .modal-bg {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(40, 30, 0, 0.85);
+      z-index: 999;
+      justify-content: center;
+      align-items: center;
+    }
+    .modal-bg.active {
+      display: flex;
+    }
+    .creator-modal {
+      background: #fff;
+      padding: 0;
+      border-radius: 16px;
+      box-shadow: 0 6px 30px #0008;
+      max-width: 80vw;
+      max-height: 65vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      overflow: hidden;
+      position: relative;
+    }
+    .creator-modal video {
+      width: 56vw;
+      height: 32vw;
+      max-width: 700px;
+      max-height: 400px;
+      background: #000;
+    }
+    .close-modal {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: #222;
+      color: #fff;
+      border: none;
+      border-radius: 50%;
+      width: 36px;
+      height: 36px;
+      font-size: 1.5em;
+      cursor: pointer;
+      z-index: 2;
     }
     @media (max-width: 900px) {
       .welcome-box, .weather-time-box {
@@ -176,6 +236,10 @@
       .footer-buttons {
         gap: 8px;
         padding: 6px 0;
+      }
+      .creator-modal video {
+        width: 84vw;
+        height: 48vw;
       }
     }
   </style>
@@ -194,7 +258,7 @@
     <img src="background.jpg" alt="Resort Background" class="background-image" />
     <div class="welcome-box">
       <div class="welcome-label">WELCOME</div>
-      <div class="family-name">Santo Family</div>
+      <div class="family-name">D'Amico Family</div>
     </div>
     <div class="weather-time-box">
       <div class="weather" id="weather"><span>☀️</span> <span id="weather-temp">80°F</span></div>
@@ -202,29 +266,59 @@
       <span class="date-label" id="date-label">SATURDAY, JULY 29TH, 2023</span>
     </div>
   </div>
-  <div class="footer-buttons">
+  <!-- Main Footer Buttons -->
+  <div class="footer-buttons" id="mainMenu">
     <a class="footer-btn" href="https://www.pluto.tv/" tabindex="1">
-      <span class="icon">📺</span>
+      <span class="icon"></span>
       <span>WATCH TV</span>
     </a>
     <a class="footer-btn" href="https://www.disneyplus.com/" tabindex="2">
-      <span class="icon">🐭</span>
+      <span class="icon"></span>
       <span>DISNEY ON DEMAND</span>
     </a>
     <a class="footer-btn" href="#" tabindex="3">
-      <span class="icon">🔗</span>
+      <span class="icon"></span>
       <span>CONNECT MY DEVICE</span>
     </a>
     <a class="footer-btn" href="#" tabindex="4">
-      <span class="icon">🏨</span>
+      <span class="icon"></span>
       <span>HOTEL SERVICES</span>
     </a>
-    <a class="footer-btn" href="#" tabindex="5">
-      <span class="icon">🏞️</span>
-      <span>PARKS & MORE</span>
-    </a>
+    <button class="footer-btn" id="moreBtn" tabindex="5">
+      <span class="icon"></span>
+      <span>MORE</span>
+    </button>
   </div>
-  <audio id="bg-music" src="magic_music.mp3" autoplay loop></audio>
+  <!-- More Submenu Buttons -->
+  <div class="footer-buttons submenu hide" id="moreMenu">
+    <a class="footer-btn" href="https://www.hbomax.com/" tabindex="6">
+      <span>HBO</span>
+    </a>
+    <a class="footer-btn" href="#" tabindex="7">
+      <span>PARKS</span>
+    </a>
+    <button class="footer-btn" id="meetCreatorBtn" tabindex="8">
+      <span>MEET THE CREATOR</span>
+    </button>
+    <button class="footer-btn" id="backBtn" tabindex="9">
+      <span>BACK</span>
+    </button>
+  </div>
+
+  <!-- Disney Jazz Background Music as MP4, hidden and looped -->
+  <video src="disney_jazz.mp4" autoplay loop playsinline style="position:absolute; left:-9999px;"></video>
+
+  <!-- Meet the Creator Modal -->
+  <div class="modal-bg" id="creatorModal">
+    <div class="creator-modal">
+      <button class="close-modal" id="closeModalBtn">&times;</button>
+      <video id="creatorVideo" controls>
+        <source src="meet_creator.mp4" type="video/mp4">
+        Sorry, your browser does not support embedded videos.
+      </video>
+    </div>
+  </div>
+
   <script>
     // Clock and date
     function updateClock() {
@@ -244,12 +338,66 @@
     }
     setInterval(updateClock, 1000);
     updateClock();
-    // Music click-to-play fallback
-    document.body.addEventListener('click', () => {
-      document.getElementById('bg-music').play();
-    });
     // Weather - static for demo, can be replaced with live API
     document.getElementById('weather-temp').innerText = "80°F";
+
+    // Menu switching
+    const mainMenu = document.getElementById('mainMenu');
+    const moreMenu = document.getElementById('moreMenu');
+    const moreBtn = document.getElementById('moreBtn');
+    const backBtn = document.getElementById('backBtn');
+
+    moreBtn.addEventListener('click', () => {
+      mainMenu.classList.add('hide');
+      setTimeout(() => {
+        mainMenu.style.display = 'none';
+        moreMenu.style.display = 'flex';
+        setTimeout(() => {
+          moreMenu.classList.remove('hide');
+        }, 10);
+      }, 400);
+    });
+
+    backBtn.addEventListener('click', () => {
+      moreMenu.classList.add('hide');
+      setTimeout(() => {
+        moreMenu.style.display = 'none';
+        mainMenu.style.display = 'flex';
+        setTimeout(() => {
+          mainMenu.classList.remove('hide');
+        }, 10);
+      }, 400);
+    });
+
+    // Meet the Creator Modal Logic
+    const meetCreatorBtn = document.getElementById('meetCreatorBtn');
+    const creatorModal = document.getElementById('creatorModal');
+    const closeModalBtn = document.getElementById('closeModalBtn');
+    const creatorVideo = document.getElementById('creatorVideo');
+
+    meetCreatorBtn.addEventListener('click', () => {
+      creatorModal.classList.add('active');
+      creatorVideo.currentTime = 0;
+      creatorVideo.play();
+    });
+
+    closeModalBtn.addEventListener('click', closeCreatorModal);
+    creatorModal.addEventListener('click', function(e) {
+      if(e.target === creatorModal) closeCreatorModal();
+    });
+    function closeCreatorModal() {
+      creatorModal.classList.remove('active');
+      creatorVideo.pause();
+      creatorVideo.currentTime = 0;
+    }
+
+    // Music click-to-play fallback for browsers that block autoplay w/ audio
+    document.body.addEventListener('click', function() {
+      var vids = document.querySelectorAll('video');
+      vids.forEach(function(vid){
+        if (vid.paused) vid.play();
+      });
+    });
   </script>
 </body>
 </html>
